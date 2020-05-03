@@ -1,0 +1,15 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}DJe-commerce - {% trans "Sign Up Closed" %}{% endblock %}
+
+{% block content %}
+<section class="container my-5 py-5">
+    <div class="col-md-7 offset-md-2">
+        <h1>{% trans "Sign Up Closed" %}</h1>
+
+        <p>{% trans "We are sorry, but the sign up is currently closed." %}</p>
+    </div>
+</section>
+{% endblock %}

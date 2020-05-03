@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+
+{% block head_title %}DJe-commerce - home{% endblock %}
+
+{% block content %}
+
+<section class="container text-center my-3 pb-3">
+  <nav class="navbar navbar-expand-lg navbar-dark mb-5 justify-content-start px-0 py-0 py-md-2 px-md-2" style="background-color: #727272;">
+
+      <div class="dropdown">
+        <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #7e7e7e;">
+          Category
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuMenu">
+          <li>
+            <a class="dropdown-item" href="{% url 'home' %}{% if order_by and filter_by %}?order_by={{ order_by }}&filter_by={{ filter_by }}{% elif filter_by %}?filter_by={{ filter_by }}{% elif order_by %}?order_by={{ order_by }}{% endif %}">
+              All
+            </a>
+          </li>
+          <li class="{% if category == 'S' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?category=S{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if order_by %}&order_by={{ order_by }}{% endif %}">
+              Shirt
+            </a>
+          </li>
+          <li class="{% if category == 'D' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?category=D{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if order_by %}&order_by={{ order_by }}{% endif %}">
+              Denim
+            </a>
+          </li>
+          <li class="{% if category == 'OW' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?category=OW{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if order_by %}&order_by={{ order_by }}{% endif %}">
+              Outwear
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button class="btn text-white dropdown-toggle" type="button" id="dropdownMenuMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #7e7e7e;">
+          Filters
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuMenu">
+          <li>
+            <a class="dropdown-item" href="{% url 'home' %}{% if order_by and category %}?order_by={{ order_by }}&category={{ category }}{% elif order_by %}?order_by={{ order_by }}{% elif category %}?category={{ category }}{% endif %}">
+              Default
+            </a>
+          </li>
+          <li class="{% if filter_by == 'N' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?filter_by=N{% if order_by %}&order_by={{ order_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              New
+            </a>
+          </li>
+          <li class="{% if filter_by == 'BS' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?filter_by=BS{% if order_by %}&order_by={{ order_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Bestseller
+            </a>
+          </li>
+          <li class="{% if filter_by == 'discount' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?filter_by=discount{% if order_by %}&order_by={{ order_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Discount price
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button class="btn text-white dropdown-toggle" type="button" id="dropdownMenuMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #7e7e7e;">
+          Sort by
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuMenu">
+          <li class="{% if order_by == 'price' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?order_by=price{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Price: low to high
+            </a>
+          </li>
+          <li class="{% if order_by == '-price' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?order_by=-price{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Price: high to low
+            </a>
+          </li>
+          <li class="{% if order_by == 'name' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?order_by=name{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Name: A-Z
+            </a>
+          </li>
+          <li class="{% if order_by == '-name' %}active-filter-li{% endif %}">
+            <a class="dropdown-item" href="?order_by=-name{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Name: Z-A
+            </a>
+          </li>
+        </ul>
+      </div>
+
+  </nav>
+
+    <div class="row">
+
+    <div class="col-sm-3 d-none d-lg-block">
+      <div class="row card card-body">
+
+        <div class="col-12 mb-3 text-left">
+            <h5 class="font-weight-bold dark-text"><strong>Filters</strong></h5>
+            <div class="divider" style="height: 3px; display: block; background-color: rgba(0,0,0,.1); margin: 1em 0; width: 40%;"></div>
+            <p class="mb-1">
+              <a class="dark-grey-text" href="{% url 'home' %}{% if order_by and category %}?order_by={{ order_by }}&category={{ category }}{% elif order_by %}?order_by={{ order_by }}{% elif category %}?category={{ category }}{% endif %}">
+                Default
+              </a>
+            </p>
+            <p class="mb-1">
+              <a class="dark-grey-text {% if filter_by == 'N' %}active-filter{% endif %}" href="?filter_by=N{% if order_by %}&order_by={{ order_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+                New
+              </a>
+            </p>
+            <p class="mb-1">
+              <a class="dark-grey-text {% if filter_by == 'BS' %}active-filter{% endif %}" href="?filter_by=BS{% if order_by %}&order_by={{ order_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+                Bestseller
+              </a>
+            </p>
+            <p class="mb-1">
+              <a class="dark-grey-text {% if filter_by == 'discount' %}active-filter{% endif %}" href="?filter_by=discount{% if order_by %}&order_by={{ order_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+                Discount price
+              </a>
+            </p>
+        </div>
+
+        <div class="col-12 mb-3 text-left">
+          <h5 class="font-weight-bold dark-text"><strong>Sort by</strong></h5>
+          <div class="divider" style="height: 3px; display: block; background-color: rgba(0,0,0,.1); margin: 1em 0; width: 40%;"></div>
+          <p class="mb-1">
+            <a class="dark-grey-text {% if order_by == 'price' %}active-filter{% endif %}" href="?order_by=price{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Price: low to high
+            </a>
+          </p>
+          <p class="mb-1">
+            <a class="dark-grey-text {% if order_by == '-price' %}active-filter{% endif %}" href="?order_by=-price{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Price: high to low
+            </a>
+          </p>
+          <p class="mb-1">
+            <a class="dark-grey-text {% if order_by == 'name' %}active-filter{% endif %}" href="?order_by=name{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Name: A-Z
+            </a>
+          </p>
+          <p class="mb-1">
+            <a class="dark-grey-text {% if order_by == '-name' %}active-filter{% endif %}" href="?order_by=-name{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
+              Name: Z-A
+            </a>
+          </p>
+      </div>
+
+        <div class="col-12 mb-3 text-left">
+            <h5 class="font-weight-bold dark-text"><strong>Category</strong></h5>
+              <div class="divider" style="height: 3px; display: block; background-color: rgba(0,0,0,.1); margin: 1em 0; width: 40%;"></div>
+              <p class="mb-1">
+                <a class="dark-grey-text" href="{% url 'home' %}{% if order_by and filter_by %}?order_by={{ order_by }}&filter_by={{ filter_by }}{% elif filter_by %}?filter_by={{ filter_by }}{% elif order_by %}?order_by={{ order_by }}{% endif %}">
+                  All
+                </a>
+              </p>
+              <p class="mb-1">
+                <a class="dark-grey-text {% if category == 'S' %}active-filter{% endif %}" href="?category=S{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if order_by %}&order_by={{ order_by }}{% endif %}">
+                  Shirt
+                </a>
+              </p>
+              <p class="mb-1">
+                <a class="dark-grey-text {% if category == 'D' %}active-filter{% endif %}" href="?category=D{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if order_by %}&order_by={{ order_by }}{% endif %}">
+                  Denim
+                </a>
+              </p>
+              <p class="mb-1">
+                <a class="dark-grey-text {% if category == 'OW' %}active-filter{% endif %}" href="?category=OW{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if order_by %}&order_by={{ order_by }}{% endif %}">
+                  Outwear
+                </a>
+              </p>
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="col-lg-9 ">
+      <div class="row">
+        {% for item in items %}
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            
+            <div class="view overlay">
+              <img src="{{ item.image1.url }}" class="card-img-top" alt="{{ item.image1.name }}">
+              <a href="{% url 'core:product' item.id item.slug %}">
+                <div class="mask rgba-white-slight"></div>
+              </a>
+            </div>
+
+            <div class="card-body text-center">
+              <a href="{% url 'core:product' item.id item.slug %}">
+                <h5 style="color: grey">{{ item.get_category_display }}</h5>
+              </a>
+              
+              <h5>
+                <a href="{% url 'core:product' item.id item.slug %}">
+                  <strong class="dark-grey-text">
+                    {{ item.name }}
+                    {% if item.color_label %}
+                    <span class="badge badge-pill {{ item.color_label }}">{{ item.get_label_display }}</span>
+                    {% endif %}
+                  </strong>
+                </a>
+              </h5>
+
+              <h4 class="blue-text">
+                <a href="{% url 'core:product' item.id item.slug %}">
+                  {% if item.discount_price %}
+                  {{ item.discount_price }}$
+                  <span class="grey-text"><del>{{ item.price }}$</del></span>
+                  {% else %}
+                  {{ item.price }}$
+                  {% endif %}
+                </a>
+              </h4>
+            </div>
+            
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pagination -->
+  <div class="row justify-content-center mt-5">
+    <nav class="d-flex justify-content-center wow fadeIn">
+      <ul class="pagination pg-blue">
+        <!-- Arrow left -->
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if order_by %}&order_by={{ order_by }}{% endif %}{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% endif %}
+        <!-- /. Arrow left -->
+
+        {% if page_obj.number|add:'-3' > 1 %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1{% if order_by %}&order_by={{ order_by }}{% endif %}{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">1</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.number|add:'-3' }}{% if order_by %}&order_by={{ order_by }}{% endif %}{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">&hellip;</a>
+        </li>
+        {% endif %}
+        {% if page_obj.number|add:'-3' == 1 %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1{% if order_by %}&order_by={{ order_by }}{% endif %}{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">1</a>
+        </li>
+        {% endif %}
+
+        {% for i in page_range %}
+          {% if page_obj.number == i %}
+          <li class="page-item active">
+            <a class="page-link">{{ i }}</a>
+          </li>
+          {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ i }}{% if order_by %}&order_by={{ order_by }}{% endif %}{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">{{ i }}</a>
+          </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.paginator.num_pages > page_obj.number|add:'3' %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.number|add:'3' }}{% if order_by %}&order_by={{ order_by }}{% endif %}{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">&hellip;</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if order_by %}&order_by={{ order_by }}{% endif %}{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">{{ page_obj.paginator.num_pages }}</a>
+        </li>
+        {% endif %}
+        {% if page_obj.paginator.num_pages == page_obj.number|add:'3' %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if order_by %}&order_by={{ order_by }}{% endif %}{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">{{ page_obj.paginator.num_pages }}</a>
+        </li>
+        {% endif %}
+
+        <!-- Arrow right -->
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if order_by %}&order_by={{ order_by }}{% endif %}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% endif %}
+        <!-- /. Arrow right -->
+      </ul>
+    </nav>
+  </div>
+  <!-- ./ Pagination -->
+  
+</section>
+{% endblock %}

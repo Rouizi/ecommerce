@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 class Size(models.Model):
@@ -45,10 +46,23 @@ class Item(models.Model):
         return self.name
 
     def in_stock(self):
+        # Return True if we have at least 1 product in stock of any size
         for item in self.stockitem_set.all():
             if item.stock > 0:
                 return True
         return False
+
+    def clean(self):
+        # raise a ValidationError if discount_price is bigger then price
+        if self.discount_price is not None:
+            if self.discount_price >= self.price:
+                raise ValidationError(
+                    {'discount_price': 'Discount price must be less then Price.'}
+                )
+
+    def save(self, *args, **kwargs):
+        self.full_clean
+        return super(Item, self).save(*args, **kwargs)
 
 
 class StockItem(models.Model):
@@ -57,24 +71,39 @@ class StockItem(models.Model):
     size = models.ForeignKey(Size, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.stock} product(s) "{self.item}" for size "{self.size}"'
+        return f'{self.stock} product(s) of "{self.item}" for size "{self.size}"'
+
+
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ordered_date = models.DateTimeField(default=timezone.now)
+    ordered = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Order of user {self.user.username}'
 
 
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
+    size = models.ForeignKey(Size, on_delete=models.SET_NULL, blank=True, null=True)
     ordered = models.BooleanField(default=False)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'OrderItem of {self.item.name}'
 
+    def total_item_price(self):
+        return self.quantity * self.item.price
 
-class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    items = models.ManyToManyField(OrderItem)
-    ordered_date = models.DateTimeField(default=timezone.now)
-    ordered = models.BooleanField(default=False)
+    def total_discount_item_price(self):
+        return self.quantity * self.item.discount_price
 
-    def __str__(self):
-        return f'Order of user {self.user.username}'
+    def amount_saved(self):
+        return self.total_item_price() - self.total_discount_item_price()
+
+    def final_price(self):
+        if self.item.discount_price:
+            return self.total_discount_item_price()
+        return self.total_item_price()

@@ -11,4 +11,4 @@ class SizeForm(forms.Form):
         choices=CHOICES, label='Select size',
         widget=forms.RadioSelect()
     )
-    quantity = forms.IntegerField(min_value=1, max_value=5)
+    quantity = forms.IntegerField(min_value=1, max_value=20)

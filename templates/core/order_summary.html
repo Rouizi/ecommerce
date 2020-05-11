@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Order Summary{% endblock %}
+
+{% block content %}
+<section class="container mb-5 pb-5 pt-4">
+	<h3 class="font-weight-bold dark-grey-text mb-4">Order Summary</h3>
+	<div class="row">
+		<div class="col-lg-8">
+
+			<div class="card wish-list mb-4">
+				<div class="card-body">
+					{% if not empty %}
+					<h5 class="mb-4">Cart (<span>{{ order_items.count }}</span> item(s))</h5>
+					{% endif %}
+
+					{% for order_item in order_items %}
+					<div class="row mb-4">
+						<div class="col-md-3">
+							<div class="view overlay z-depth-1 mb-3 mb-md-0">
+								<img class="img-fluid w-100 mt-md-3 mt-xl-0" src="{{ order_item.item.image1.url }}" alt="{{ order_item.item.name }}">
+								<a href="{% url 'core:product' order_item.item.pk order_item.item.slug %}">
+									<div class="mask">
+										<div class="mask rgba-black-slight"></div>
+									</div>
+								</a>
+							</div>
+						</div>
+						<div class="col-md-9 detail d-flex flex-column justify-content-between">
+							<div class="row">
+								<div class="col-7">
+									<h5 class="font-weight-bold">{{ order_item.item.name }}</h5>
+									<div class="text-muted small">{{ order_item.item.get_category_display }}</div>
+									<div class="text-muted small">Quantity : {{ order_item.quantity }}</div>
+									<div class="text-muted small">Size : {{ order_item.size }}</div>
+									<div class="text-muted small">
+										Price : 
+										{% if order_item.item.discount_price %}
+										${{ order_item.item.discount_price }}
+										<span class="grey-text"><del>${{ order_item.item.price }}</del></span>
+										{% else %}
+										${{ order_item.item.price }}
+										{% endif %}
+									</div>
+								</div>
+								<div class="col-5 pr-0">
+									<div class="row input-group order-summary">
+										<div class="input-group-prepend">
+											<a class="btn btn-md m-0 px-3 py-2 z-depth-0 waves-effect" href="{% if order_item.quantity == 1 %}#{% else %}{% url 'core:manage-order-item' order_item.item.pk %}?size={{ order_item.size }}&op=minus{% endif %}" type="button" id="btn-minus" style="border: 1px solid #ced4da;">
+												<i class="dark-grey-text fas fa-minus"></i>
+											</a>
+										</div>
+										<div class="input-group-append">
+											<a class="btn btn-md m-0 px-3 py-2 z-depth-0" href="{% url 'core:manage-order-item' order_item.item.pk %}?size={{ order_item.size }}&op=plus" type="button" id="btn-plus" style="border: 1px solid #ced4da;">
+												<i class="dark-grey-text fas fa-plus"></i>
+											</a>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<a href="{% url 'core:manage-order-item' order_item.item.pk %}?size={{ order_item.size }}&op=remove" type="button" title="remove item" class="card-link-secondary small text-uppercase mr-3 remove-item">
+                    <i class="fas fa-trash-alt mr-1"></i>
+                    <span class="d-none d-sm-inline"> Delete</span> 
+                  </a>
+								</div>
+								<div>
+									<p class="mb-0 dark-grey-text">
+										{% if order_item.item.discount_price %}
+										Total: ${{ order_item.total_discount_item_price }}
+										<span class="badge badge-warning">Saving ${{ order_item.amount_saved }}</span>
+
+										{% else %}
+										Total: ${{ order_item.total_item_price }}
+										{% endif %}
+									</p>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+					<hr class="mb-4">
+					
+					{% endfor %}
+					
+					{% if empty %}
+					<p class="text-muted mb-0">You cart is empty</p>
+					{% else %}
+					<p class="text-primary mb-0"><i class="fas fa-info-circle mr-1"></i> Do not delay the purchase, adding
+						items to your cart does not mean booking them.</p>
+					{% endif %}
+				</div>
+			</div>
+
+		</div>
+		<div class="col-lg-4">
+
+			<div class="card mb-4">
+				<div class="card-body">
+
+					<ul class="list-group list-group-flush dark-grey-text">
+						<li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+							<div>
+								<span class="font-weight-bold">The total amount</span>
+									<p class="mb-0">(including VAT)</p>
+							</div>
+							<span>
+                ${{ price_include_discount }}
+                {% if price_include_discount != price_without_discount %}
+                <br>
+                <del>${{ price_without_discount }}</del>
+                {% endif %}
+              </span>
+						</li>
+					</ul>
+
+					<a href="#" type="button" class="btn btn-primary btn-block waves-effect waves-light">
+            go to checkout
+          </a><br>
+          <a href="{% url 'home' %}" type="button" class="btn btn-secondary btn-block waves-effect waves-light">
+            continue shopping
+          </a>
+
+				</div>
+			</div>
+			<!-- Card -->
+
+			<!-- Card -->
+			<div class="card mb-4">
+				<div class="card-body">
+
+					<a class="dark-grey-text d-flex justify-content-between" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+						Add a discount code (optional)
+						<span><i class="fas fa-chevron-down pt-1"></i></span>
+					</a>
+
+					<div class="collapse" id="collapseExample">
+						<div class="mt-3">
+							<div class="md-form md-outline mb-0">
+								<input type="text" id="discount-code" class="form-control font-weight-light" placeholder="Enter discount code">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Card -->
+
+		</div>
+	</div>
+</section>
+{% endblock content %}

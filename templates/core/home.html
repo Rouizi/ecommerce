@@ -97,8 +97,8 @@
       <div class="row card card-body">
 
         <div class="col-12 mb-3 text-left">
-            <h5 class="font-weight-bold dark-text"><strong>Filters</strong></h5>
-            <div class="divider" style="height: 3px; display: block; background-color: rgba(0,0,0,.1); margin: 1em 0; width: 40%;"></div>
+            <h5 class="font-weight-bold">Filters</h5>
+            <div class="divider"></div>
             <p class="mb-1">
               <a class="dark-grey-text" href="{% url 'home' %}{% if order_by and category %}?order_by={{ order_by }}&category={{ category }}{% elif order_by %}?order_by={{ order_by }}{% elif category %}?category={{ category }}{% endif %}">
                 Default
@@ -122,8 +122,8 @@
         </div>
 
         <div class="col-12 mb-3 text-left">
-          <h5 class="font-weight-bold dark-text"><strong>Sort by</strong></h5>
-          <div class="divider" style="height: 3px; display: block; background-color: rgba(0,0,0,.1); margin: 1em 0; width: 40%;"></div>
+          <h5 class="font-weight-bold">Sort by</h5>
+          <div class="divider"></div>
           <p class="mb-1">
             <a class="dark-grey-text {% if order_by == 'price' %}active-filter{% endif %}" href="?order_by=price{% if filter_by %}&filter_by={{ filter_by }}{% endif %}{% if category %}&category={{ category }}{% endif %}">
               Price: low to high
@@ -147,8 +147,8 @@
       </div>
 
         <div class="col-12 mb-3 text-left">
-            <h5 class="font-weight-bold dark-text"><strong>Category</strong></h5>
-              <div class="divider" style="height: 3px; display: block; background-color: rgba(0,0,0,.1); margin: 1em 0; width: 40%;"></div>
+            <h5 class="font-weight-bold">Category</h5>
+              <div class="divider"></div>
               <p class="mb-1">
                 <a class="dark-grey-text" href="{% url 'home' %}{% if order_by and filter_by %}?order_by={{ order_by }}&filter_by={{ filter_by }}{% elif filter_by %}?filter_by={{ filter_by }}{% elif order_by %}?order_by={{ order_by }}{% endif %}">
                   All
@@ -189,27 +189,25 @@
 
             <div class="card-body text-center">
               <a href="{% url 'core:product' item.id item.slug %}">
-                <h5 style="color: grey">{{ item.get_category_display }}</h5>
+                <h5 class="category">{{ item.get_category_display }}</h5>
               </a>
               
-              <h5>
-                <a href="{% url 'core:product' item.id item.slug %}">
-                  <strong class="dark-grey-text">
+              <a href="{% url 'core:product' item.id item.slug %}">
+                <h5>
                     {{ item.name }}
                     {% if item.color_label %}
                     <span class="badge badge-pill {{ item.color_label }}">{{ item.get_label_display }}</span>
                     {% endif %}
-                  </strong>
-                </a>
-              </h5>
+                </h5>
+              </a>
 
               <h4 class="blue-text">
                 <a href="{% url 'core:product' item.id item.slug %}">
                   {% if item.discount_price %}
-                  {{ item.discount_price }}$
-                  <span class="grey-text"><del>{{ item.price }}$</del></span>
+                   ${{ item.discount_price }}
+                  <span class="grey-text"><del>${{ item.price }}</del></span>
                   {% else %}
-                  {{ item.price }}$
+                  ${{ item.price }}
                   {% endif %}
                 </a>
               </h4>

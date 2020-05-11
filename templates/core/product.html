@@ -3,7 +3,7 @@
 {% block head_title %}{{ object.name }}{% endblock %}
 
 {% block content %}
-<section class="container my-5 py-5">
+<section class="container mb-5 pb-5 pt-4">
     <a href="{% url 'home' %}"><span>Home / </span></a>
     <span>{{ item.get_category_display }} / </span>
     <span>{{ item.name }}</span>
@@ -48,19 +48,19 @@
       </div>
     </h5>
 
-    <h5 style="color: grey">{{ item.get_category_display }}</h5>
+    <h5 >{{ item.get_category_display }}</h5>
 
-    <h4 class="" style="color: #4f4f4f">
+    <h4 class="discount">
         {% if item.discount_price %}
-        {{ item.discount_price }}$
-        <span class="grey-text"><del>{{ item.price }}$</del></span>
+        ${{ item.discount_price }}
+        <span class="grey-text"><del>${{ item.price }}</del></span>
         {% else %}
-        {{ item.price }}$
+        ${{ item.price }}
         {% endif %}
     </h4>
 
     {% if item.description %}
-    <h5 class="dark-text mt-4 mb-1">Description</h5>
+    <h5 class="mt-4 mb-1">Description</h5>
     <p class="pt-1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit
       error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio,
       officia quis dolore quos sapiente tempore alias.</p>
@@ -89,7 +89,7 @@
             <i class="white-text fas fa-minus"></i>
           </button>
         </div>
-        <input type="text" name="quantity" class="col-2 col-xl-1 text-center" min="1" max="5" value="1" id="quantity" aria-describedby="button-addon1" style="color: rgb(43, 43, 43)">
+        <input type="text" name="quantity" class="col-2 text-center" min="1" max="20" value="1" id="quantity" aria-describedby="button-addon1" style="color: rgb(43, 43, 43)">
         <div class="input-group-append">
           <button class="btn btn-md m-0 px-3 py-2 z-depth-0" type="button" id="btn-plus" style="background-color: #008eff;">
             <i class="white-text fas fa-plus"></i>
@@ -116,7 +116,7 @@
 
     btnPlus.click(function() {
       var currentVal = parseInt(quantity.val())
-      if (currentVal < 5) {
+      if (currentVal < 20) {
         currentVal++
         quantity.val(currentVal)
       }

@@ -98,27 +98,28 @@
   </div>
   {% endif %}
   
-
-  {% if messages %}
-    {% for message in messages %}
-      {% if message.tags == "error" %}
-      <div class="alert alert-danger alert-dismissible fade show" style="{% if not home %}margin-top: 68px;{% endif %}">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-      </div>
-      {% elif message.tags == "info"  %}
-      <div class="alert alert-info alert-dismissible fade show" style="{% if not home %}margin-top: 68px;{% endif %}">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-      </div>
-      {% elif message.tags == 'success' %}
-      <div class="alert alert-success alert-dismissible fade show" style="{% if not home %}margin-top: 68px;{% endif %}">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-      </div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+  <div class="{% if not home %}mt-5 pt-4{% endif %}">
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == "error" %}
+        <div class="alert alert-danger alert-dismissible fade show">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% elif message.tags == "info"  %}
+        <div class="alert alert-info alert-dismissible fade show">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% elif message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
 
   {% block content %}
   {% endblock %}

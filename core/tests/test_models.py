@@ -3,42 +3,26 @@ from django.core.exceptions import ValidationError
 
 from core.models import Size, Item, StockItem, OrderItem, Order
 from users.models import User
+from core.tests.factories import SizeFactory, ItemFactory, StockItemFactory
 
 
 class SizeModelTest(TestCase):
-    def setUp(self):
-        self.size = Size.objects.create(name='S')
-
     def test_size_name(self):
-        size = Size.objects.get(name='S')
-        expected_size_name = self.size.name
-        self.assertEquals(expected_size_name, str(size))
+        size = SizeFactory(name='S')
+        self.assertEquals('S', str(size))
 
 
 class ItemModelTest(TestCase):
     def setUp(self):
-        self.size_s = Size.objects.create(name='S')
-        self.size_m = Size.objects.create(name='M')
-        self.size_l = Size.objects.create(name='L')
-        self.item1 = Item.objects.create(
-            name='item1', category='C1', price=56
-        )
-        self.item2 = Item.objects.create(
-            name='item2', category='C1', price=25
-        )
-        # Stock for item1
-        StockItem.objects.create(stock=1, item=self.item1, size=self.size_s)
-        StockItem.objects.create(stock=0, item=self.item1, size=self.size_m)
-        StockItem.objects.create(stock=0, item=self.item1, size=self.size_l)
+        self.item1 = Item.objects.create(name='item1', category='C1', price=56)
+        self.item2 = Item.objects.create(name='item2', category='C1', price=25)
 
-        # Stock for item2
-        StockItem.objects.create(stock=0, item=self.item2, size=self.size_s)
-        StockItem.objects.create(stock=0, item=self.item2, size=self.size_m)
-        StockItem.objects.create(stock=0, item=self.item2, size=self.size_l)
+        StockItem.objects.create(stock=1, item=self.item1)
+        StockItem.objects.create(stock=0, item=self.item2)
 
     def test_item_name(self):
         item = Item.objects.get(name='item1')
-        expected_item_name = self.item.name
+        expected_item_name = self.item1.name
         self.assertEqual(expected_item_name, str(item))
 
     def test_in_stock(self):

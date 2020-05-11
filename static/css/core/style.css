@@ -1,3 +1,18 @@
 .active-filter {
     border-bottom: 2px solid #007bff;
 }
+h5, .discount {
+    color: #4f4f4f
+}
+.divider {
+    height: 3px; 
+    display: block; 
+    background-color: rgba(0,0,0,.1); 
+    margin: 1em 0; 
+    width: 40%;
+}
+.category {color: grey;}
+.remove-item {color: rgb(197, 0, 0);}
+.remove-item:hover {color: red;}
+.order-summary {width: auto; display: flex; justify-content: flex-end; margin-right: 10px;}
+@media (max-width: 768px) {.detail{margin-top: 20px}}

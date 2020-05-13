@@ -8,3 +8,4 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = settings.AUTH_USER_MODEL
 
     username = factory.Sequence(lambda n: f'user_{n}')
+    password = factory.PostGenerationMethodCall('set_password', '1234')

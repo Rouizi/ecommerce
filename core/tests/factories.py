@@ -13,12 +13,14 @@ class ItemFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Item
 
-    name = factory.Sequence(lambda n: 'item %d' % n)
+    name = factory.Sequence(lambda n: 'item_%d' % n)
     category = factory.fuzzy.FuzzyChoice(models.Item.CATEGORY, getter=lambda c: c[0])
     label = factory.fuzzy.FuzzyChoice(models.Item.LABEL, getter=lambda c: c[0])
     color_label = factory.fuzzy.FuzzyChoice(models.Item.COLOR_LABEL, getter=lambda c: c[0])
     price = factory.Sequence(lambda n: (n + 1))
     description = factory.Faker('sentence')
+    image1 = 'image1'
+    slug = factory.LazyAttribute(lambda o: o.name)
 
 
 class StockItemFactory(factory.django.DjangoModelFactory):

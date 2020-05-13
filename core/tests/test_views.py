@@ -3,6 +3,14 @@ from django.urls import reverse
 
 from core.models import Size, Item, StockItem, OrderItem, Order
 from users.models import User
+from core.tests.factories import (
+    ItemFactory,
+    SizeFactory,
+    StockItemFactory,
+    OrderFactory,
+    OrderItemFactory
+)
+from users.tests.factories import UserFactory
 
 
 class HomeViewTest(TestCase):
@@ -43,7 +51,9 @@ class ItemDetailViewTest(TestCase):
         self.slug3 = self.item3.slug
 
     def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('core:product', kwargs=({'pk': self.pk1, 'slug': self.slug1})))
+        response = self.client.get(reverse(
+            'core:product', kwargs=({'pk': self.pk1, 'slug': self.slug1}))
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/product.html')
 
@@ -211,19 +221,16 @@ class ItemDetailViewTest(TestCase):
 
 class OrderSummaryViewTest(TestCase):
     def setUp(self):
-        self.user1 = User.objects.create_user(username='user1', password='1234')
-        self.user2 = User.objects.create_user(username='user2', password='1234')
+        self.user1 = UserFactory(username='user1')
+        self.user2 = UserFactory(username='user2')
 
-        self.size_s = Size.objects.create(name='S')
+        self.size = SizeFactory()
+        self.item1 = ItemFactory(price=40)
+        self.item2 = ItemFactory(price=30, discount_price=20)
+        self.order = OrderFactory(user=self.user1)
 
-        self.item1 = Item.objects.create(
-            name='item1', price=100, image1='img1', image2='img2', slug='item1'
-        )
-        self.order = Order.objects.create(user=self.user1)
-
-        OrderItem.objects.create(
-            user=self.user1, item=self.item1, size=self.size_s, quantity=5, order=self.order
-        )
+        OrderItemFactory(user=self.user1, item=self.item1, quantity=1, order=self.order)
+        OrderItemFactory(user=self.user1, item=self.item2, quantity=1, order=self.order)
 
     def test_view_uses_correct_template(self):
         self.client.login(username='user1', password='1234')
@@ -237,7 +244,7 @@ class OrderSummaryViewTest(TestCase):
 
         self.assertEqual(response.context['empty'], True)
 
-    def test_view_returns_order_items(self):
+    def test_order_items_in_context(self):
         self.client.login(username='user1', password='1234')
         response = self.client.get(reverse('core:order-summary'))
         order_items = OrderItem.objects.filter(order=self.order, ordered=False)
@@ -245,6 +252,18 @@ class OrderSummaryViewTest(TestCase):
         # Check that the view returns all the order items that belong to the order
         for i in range(len(order_items)):
             self.assertEqual(response.context['order_items'][i], order_items[i])
+
+    def test_price_include_discount_in_context(self):
+        self.client.login(username='user1', password='1234')
+        response = self.client.get(reverse('core:order-summary'))
+
+        self.assertEqual(60.0, response.context['price_include_discount'])
+
+    def test_price_without_discount_in_context(self):
+        self.client.login(username='user1', password='1234')
+        response = self.client.get(reverse('core:order-summary'))
+
+        self.assertEqual(70.0, response.context['price_without_discount'])
 
 
 class ManageOrderItemViewTest(TestCase):

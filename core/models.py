@@ -3,6 +3,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
+from users.models import Address
+
 
 class Size(models.Model):
     name = models.CharField(max_length=10)
@@ -78,6 +80,8 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ordered_date = models.DateTimeField(default=timezone.now)
     ordered = models.BooleanField(default=False)
+    address = models.ForeignKey(
+        Address, on_delete=models.SET, null=True, blank=True)
 
     def __str__(self):
         return f'Order of user {self.user.username}'

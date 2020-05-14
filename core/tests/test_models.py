@@ -3,7 +3,14 @@ from django.core.exceptions import ValidationError
 
 from core.models import Size, Item, StockItem, OrderItem, Order
 from users.models import User
-from core.tests.factories import SizeFactory, ItemFactory, StockItemFactory
+from core.tests.factories import (
+    SizeFactory,
+    ItemFactory,
+    StockItemFactory,
+    OrderItemFactory,
+    OrderFactory
+)
+from users.tests.factories import UserFactory, AddressFactory
 
 
 class SizeModelTest(TestCase):
@@ -77,13 +84,20 @@ class OrderItemModelTest(TestCase):
 
 
 class OrderModelTest(TestCase):
+    def setUp(self):
+        self.user = UserFactory()
+        self.order = OrderFactory(user=self.user)
+
+    def test_factory(self):
+        order = OrderFactory(user=self.user)
+
+        self.assertIsNotNone(order)
+        self.assertIsNone(order.shipping_address)
+
     def test_order_name(self):
-        self.user1 = User.objects.create(username='user1', password='1234')
-        self.item1 = Item.objects.create(name='item1', price=100, discount_price=90)
-        self.order_item1 = OrderItem.objects.create(
-            user=self.user1, item=self.item1, quantity=5
-        )
-        order = Order.objects.create(user=self.user1)
-        order.items.add(self.order_item1)
-        expected_order_name = f'Order of user {self.user1.username}'
-        self.assertEqual(expected_order_name, str(order))
+        expected_order_name = f'Order of user {self.user.username}'
+
+        self.assertEqual(expected_order_name, str(self.order))
+
+    def tes_has_user(self):
+        self.assertEqual(user, self.order.user)

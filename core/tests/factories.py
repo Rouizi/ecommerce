@@ -47,3 +47,4 @@ class OrderItemFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
     user = factory.SubFactory(UserFactory)
     order = factory.SubFactory(OrderFactory)
+

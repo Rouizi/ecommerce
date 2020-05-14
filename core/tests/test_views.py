@@ -10,7 +10,7 @@ from core.tests.factories import (
     OrderFactory,
     OrderItemFactory
 )
-from users.tests.factories import UserFactory
+from users.tests.factories import UserFactory, AddressFactory
 
 
 class HomeViewTest(TestCase):
@@ -376,7 +376,7 @@ class ManageOrderItemViewTest(TestCase):
         message = list(response.context['messages'])
         self.assertEqual(str(message[0]), 'This item quantity was updated.')
 
-    def test_quantity_dont_decreased(self):
+    def test_quantity_do_not_decreased(self):
         self.client.login(username='user1', password='1234')
         url = 'http://127.0.0.1:8000/manage-order-item/' + str(self.item3.pk) + '/'
         response = self.client.get(url, {'size': 'S', 'op': 'minus'}, follow=True)
@@ -444,3 +444,56 @@ class ManageOrderItemViewTest(TestCase):
         response = self.client.get(url, {'size': 'S', 'op': 'remove'}, follow=True)
         # Now we check that the user don't have an order
         self.assertFalse(order_user1.exists())
+
+
+class TestCheckoutView(TestCase):
+    def setUp(self):
+        self.user = UserFactory(username='user1')
+
+    def test_unauthenticated_access(self):
+        response = self.client.get(reverse('core:checkout'))
+
+        # Check user are redirected to login page
+        self.assertEqual(302, response.status_code)
+        self.assertRedirects(response, '/accounts/login/?next=/checkout/')
+
+    def test_view_uses_correct_template(self):
+        order = OrderFactory(user=self.user)
+        self.client.login(username='user1', password='1234')
+        response = self.client.get(reverse('core:checkout'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'core/checkout.html')
+
+    def test_error_if_no_order(self):
+        """Redirect the user to the home page with an error msg if he does not have an order"""
+        self.client.login(username='user1', password='1234')
+        response = self.client.get(reverse('core:checkout'), follow=True)
+
+        message = list(response.context['messages'])
+        self.assertEqual(str(message[0]), 'You do not have an active order.')
+        self.assertRedirects(response, '/')
+
+    def test_view_returns_order_in_context(self):
+        order = OrderFactory(user=self.user)
+        self.client.login(username='user1', password='1234')
+        response = self.client.get(reverse('core:checkout'))
+
+        self.assertEqual(response.context['order'], order)
+
+    def test_view_returns_form_in_context(self):
+        order = OrderFactory(user=self.user)
+        self.client.login(username='user1', password='1234')
+        response = self.client.get(reverse('core:checkout'))
+
+        self.assertTrue('form' in response.context)
+
+    def test_view_order_items_in_context(self):
+        item = ItemFactory()
+        order = OrderFactory(user=self.user)
+        order_item = OrderItemFactory(user=self.user, item=item, order=order)
+
+        self.client.login(username='user1', password='1234')
+        response = self.client.get(reverse('core:checkout'))
+
+        self.assertEqual(response.context['order_items'][0], order_item)

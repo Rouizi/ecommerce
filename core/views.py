@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F
 
 from core.models import Item, OrderItem, Order, Size
-from .forms import SizeForm
+from .forms import SizeForm, CheckoutForm
 
 
 class SafePaginator(Paginator):
@@ -33,6 +33,7 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
+
         items = Item.objects.all()
         paginator = self.paginator_class(items, self.paginate_by)
 
@@ -210,6 +211,7 @@ def add_to_cart(request, item, quantity, size, order_item):
 
 
 class OrderSummary(LoginRequiredMixin, View):
+    """Show the items with their details that are in the order of the user"""
     def get(self, request, *args, **kwargs):
         order = Order.objects.filter(user=request.user, ordered=False)
         context = {}
@@ -218,13 +220,25 @@ class OrderSummary(LoginRequiredMixin, View):
             return render(request, 'core/order_summary.html', context)
 
         order_items = OrderItem.objects.filter(order=order[0], ordered=False)
+        price_include_discount = 0
+        price_without_discount = 0
+        for order_item in order_items:
+            price_include_discount += order_item.final_price()
+            price_without_discount += order_item.total_item_price()
+
         context['order_items'] = order_items
+        context['price_include_discount'] = price_include_discount
+        context['price_without_discount'] = price_without_discount
         return render(request, 'core/order_summary.html', context)
 
 
 @login_required
 @transaction.atomic
 def manage_order_item(request, pk):
+    """
+    Allow users to increase, decrease or
+    delete an item in the order summary page
+    """
     size = request.GET.get('size', None)
     operation = request.GET.get('op', None)
 
@@ -296,6 +310,40 @@ def remove_order_item_from_cart(request, order_item, stock_item):
     messages.info(request, "This item was removed from your cart.")
 
 
-@login_required
-def remove_order_from_cart(request):
-    pass
+class CheckoutView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        order = Order.objects.filter(user=request.user, ordered=False)
+        if not order.exists():
+            messages.error(request, 'You do not have an active order.')
+            return redirect('/')
+
+        form = CheckoutForm()
+        order_items = OrderItem.objects.filter(order=order[0], ordered=False)
+        price_include_discount = 0
+        for order_item in order_items:
+            price_include_discount += order_item.final_price()
+
+        context = {
+            'order': order[0],
+            'order_items': order_items,
+            'price_include_discount': price_include_discount,
+            'form': form
+        }
+        return render(request, 'core/checkout.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = CheckoutForm(request.POST)
+
+        if form.is_valid():
+            shipping_address = form.cleaned_data.get('shipping_address')
+            billing_address = form.cleaned_data('billing_address')
+            shipping_zip = form.cleaned_data('shipping_zip')
+            billing_zip = form.cleaned_data('billing_zip')
+            country_shipping = form.cleaned_data('country_shipping')
+            country_billing = form.cleaned_data('country_billing')
+            billing_same_as_shipping = form.cleaned_data('billing_same_as_shipping')
+            set_default_shipping = form.cleaned_data('set_default_shipping')
+            set_default_billing = form.cleaned_data('set_default_billing')
+            use_default_shipping = form.cleaned_data('use_default_shipping')
+            use_default_billing = form.cleaned_data('use_default_billing')
+            payment_option = form.cleaned_data('payment_option')

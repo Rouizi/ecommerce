@@ -2,6 +2,7 @@
 .vscode/
 .idea/
 .git/
+__pycache__/
 ecommerce/__pycache__/
 ecommerce/settings/__pycache__/
 core/__pycache__/

@@ -20,7 +20,7 @@
       {% if user.is_authenticated %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'core:order-summary' %}">
-            <span class="badge badge-pill red">1</span>
+            <span class="badge badge-pill red">{{ nb_of_items }}</span>
             <i class="fas fa-shopping-cart" style="color: rgb(71, 71, 71)"></i>
           </a>
       </li>

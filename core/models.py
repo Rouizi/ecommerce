@@ -86,6 +86,12 @@ class Order(models.Model):
     def __str__(self):
         return f'Order of user {self.user.username}'
 
+    def total_price(self):
+        total = 0
+        for order_item in self.orderitem_set.all():
+            total += order_item.final_price()
+        return total
+
 
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

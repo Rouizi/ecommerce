@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     # 'allauth.socialaccount.providers.google',
     'crispy_forms',
+
     'core',
     'users',
+    'payment',
 ]
 
 MIDDLEWARE = [

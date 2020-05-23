@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, View
+from django.views.generic.edit import FormView
 from django.core.paginator import Paginator, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -10,8 +11,10 @@ from django.db import IntegrityError, transaction
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F
 
+
 from core.models import Item, OrderItem, Order, Size
-from .forms import SizeForm, CheckoutForm
+from core.forms import SizeForm, CheckoutForm
+from users.models import Address
 
 
 class SafePaginator(Paginator):
@@ -220,6 +223,7 @@ class OrderSummary(LoginRequiredMixin, View):
             return render(request, 'core/order_summary.html', context)
 
         order_items = OrderItem.objects.filter(order=order[0], ordered=False)
+        # We could just do order.total_price() to have the 'price_include_discount'
         price_include_discount = 0
         price_without_discount = 0
         for order_item in order_items:
@@ -310,40 +314,123 @@ def remove_order_item_from_cart(request, order_item, stock_item):
     messages.info(request, "This item was removed from your cart.")
 
 
-class CheckoutView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        order = Order.objects.filter(user=request.user, ordered=False)
+class CheckoutView(LoginRequiredMixin, FormView):
+    template_name = 'core/checkout.html'
+    form_class = CheckoutForm
+    extra_context = {}
+
+    def get(self, request, **kwargs):
+        order = Order.objects.filter(user=self.request.user, ordered=False)
         if not order.exists():
-            messages.error(request, 'You do not have an active order.')
+            messages.error(self.request, 'You do not have an active order.')
             return redirect('/')
 
         form = CheckoutForm()
         order_items = OrderItem.objects.filter(order=order[0], ordered=False)
-        price_include_discount = 0
-        for order_item in order_items:
-            price_include_discount += order_item.final_price()
 
-        context = {
-            'order': order[0],
-            'order_items': order_items,
-            'price_include_discount': price_include_discount,
-            'form': form
-        }
-        return render(request, 'core/checkout.html', context)
+        self.extra_context['order'] = order[0]
+        self.extra_context['order_items'] = order_items
+        self.extra_context['form'] = form
 
-    def post(self, request, *args, **kwargs):
-        form = CheckoutForm(request.POST)
+        print(self.extra_context)
 
-        if form.is_valid():
-            shipping_address = form.cleaned_data.get('shipping_address')
-            billing_address = form.cleaned_data('billing_address')
-            shipping_zip = form.cleaned_data('shipping_zip')
-            billing_zip = form.cleaned_data('billing_zip')
-            country_shipping = form.cleaned_data('country_shipping')
-            country_billing = form.cleaned_data('country_billing')
-            billing_same_as_shipping = form.cleaned_data('billing_same_as_shipping')
-            set_default_shipping = form.cleaned_data('set_default_shipping')
-            set_default_billing = form.cleaned_data('set_default_billing')
-            use_default_shipping = form.cleaned_data('use_default_shipping')
-            use_default_billing = form.cleaned_data('use_default_billing')
-            payment_option = form.cleaned_data('payment_option')
+        return self.render_to_response(self.extra_context)
+
+    def get_success_url(self, **kwargs):
+        return reverse('core:checkout')
+
+    def form_valid(self, form, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        shipping_address = form.cleaned_data.get('shipping_address')
+        billing_address = form.cleaned_data.get('billing_address')
+        shipping_zip = form.cleaned_data.get('shipping_zip')
+        billing_zip = form.cleaned_data.get('billing_zip')
+        country_shipping = form.cleaned_data.get('country_shipping')
+        country_billing = form.cleaned_data.get('country_billing')
+        billing_same_as_shipping = form.cleaned_data.get('billing_same_as_shipping')
+        set_default_shipping = form.cleaned_data.get('set_default_shipping')
+        set_default_billing = form.cleaned_data.get('set_default_billing')
+        use_default_shipping = form.cleaned_data.get('use_default_shipping')
+        use_default_billing = form.cleaned_data.get('use_default_billing')
+        payment_option = form.cleaned_data.get('payment_option')
+
+        if use_default_shipping:
+            address = Address.objects.filter(
+                user=self.request.user,
+                default_shipping_address=True
+            )
+            if not address.exists():
+                return self.render_to_response(context)
+        elif shipping_address and country_shipping and shipping_zip:
+            if set_default_shipping:
+                address, created = Address.objects.get_or_create(
+                    user=self.request.user,
+                    shipping_address=shipping_address,
+                    shipping_zip=shipping_zip,
+                    default_shipping_address=True,
+                )
+            else:
+                address, created = Address.objects.get_or_create(
+                    user=self.request.user,
+                    shipping_address=shipping_address,
+                    shipping_zip=shipping_zip,
+                )
+        else:
+            if not billing_address or not country_billing or not billing_zip:
+                msg = 'Please fill in the required shipping and billing address fields.'
+            else:
+                msg = 'Please fill in the required shipping address fields.'
+            messages.error(self.request, msg)
+            return self.render_to_response(context)
+
+        if use_default_billing:
+            address = Address.objects.filter(
+                user=self.request.user,
+                default_billing_address=True
+            )
+            if not address.exists():
+                return self.render_to_response(context)
+        elif billing_same_as_shipping:
+            if use_default_shipping:
+                address = Address.objects.filter(
+                    user=self.request.user,
+                    default_shipping_address=True
+                )
+                if not address.exists():
+                    return self.render_to_response(context)
+                else:
+                    address.billing_address = address.shipping_address
+                    address.save()
+            elif shipping_address and country_shipping and shipping_zip:
+                address = Address.objects.get(user=self.request.user)
+                address.billing_address = shipping_address
+                address.billing_zip = shipping_zip
+                address.save()
+            else:
+                msg = 'Please fill in the required shipping address fields.'
+                messages.error(self.request, msg)
+                return self.render_to_response(context)
+        elif billing_address and country_billing and billing_zip:
+            address = Address.objects.get(user=self.request.user)
+            address.billing_address = billing_address
+            address.country_billing = country_billing
+            address.billing_zip = billing_zip
+            address.save()
+        else:
+            if not shipping_address or not country_shipping or not shipping_zip:
+                msg = 'Please fill in the required shipping and billing address fields.'
+            else:
+                msg = 'Please fill in the required shipping address fields.'
+            messages.error(self.request, msg)
+            return self.render_to_response(context)
+
+        if payment_option == 'ST':
+            # save
+            pass
+        else:
+            # return silent error
+            pass
+
+        return self.render_to_response(context)
+        # return super().form_valid(form)

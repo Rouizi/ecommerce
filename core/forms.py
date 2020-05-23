@@ -22,12 +22,17 @@ class CheckoutForm(forms.Form):
         (PAYPAL, 'Paypal')
     )
     UNITED_STATES = 'US'
-    COUNTRY_CHOICES = ((UNITED_STATES, 'United States'),)
-    shipping_address = forms.CharField(max_length=255)
-    billing_address = forms.CharField(max_length=255)
-    shipping_zip = forms.CharField(max_length=50)
-    billing_zip = forms.CharField(max_length=50)
-    country = forms.ChoiceField(widget=forms.Select, choices=COUNTRY_CHOICES)
+    COUNTRY_CHOICES = (
+        (UNITED_STATES, 'United States'),
+    )
+    shipping_address = forms.CharField(max_length=255, required=False)
+    billing_address = forms.CharField(max_length=255, required=False)
+    shipping_zip = forms.CharField(max_length=50, required=False)
+    billing_zip = forms.CharField(max_length=50, required=False)
+    country_shipping = forms.ChoiceField(
+        widget=forms.Select, choices=COUNTRY_CHOICES, required=False)
+    country_billing = forms.ChoiceField(
+        widget=forms.Select, choices=COUNTRY_CHOICES, required=False)
     billing_same_as_shipping = forms.BooleanField(required=False)
     set_default_shipping = forms.BooleanField(required=False)
     set_default_billing = forms.BooleanField(required=False)

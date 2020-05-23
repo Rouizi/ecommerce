@@ -10,10 +10,10 @@ class User(AbstractUser):
 
 class Address(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    shipping_address = models.CharField(max_length=255)
-    billing_address = models.CharField(max_length=255)
-    shipping_zip = models.CharField(max_length=50)
-    billing_zip = models.CharField(max_length=50)
+    shipping_address = models.CharField(max_length=255, null=True)
+    billing_address = models.CharField(max_length=255, null=True)
+    shipping_zip = models.CharField(max_length=50, null=True)
+    billing_zip = models.CharField(max_length=50, null=True)
     default_shipping_address = models.BooleanField(default=False)
     default_billing_address = models.BooleanField(default=False)
 

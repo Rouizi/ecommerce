@@ -14,82 +14,86 @@
   
             <div class="">
               <h4>Shipping address</h4>
-              <div class="md-form mb-5">
-                <input type='text' placeholder='1234 Main St' id='shipping_address' name='shipping_address' class='form-control' />
-                <label for="shipping_address" class="active">Address</label>
-              </div>
-  
-              <div class="row">
-  
-                <div class="col-lg-4 col-md-12 mb-4">
-                  <label for="shipping_address">Country</label>
-                  <select class="custom-select d-block w-100" id="id_shipping_address" name="country_shipping">
-                    <option value="">Choose...</option>
-                    {% for value, name in form.country_shipping.field.choices %}
-                      <option value="{{ value }}"{% if form.fields.country.value == value %} selected{% endif %}>{{ name }}</option>
-                    {% endfor %}
-                  </select>
+              <div class="hideable_shipping">
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='1234 Main St' id='shipping_address' name='shipping_address' class='form-control' />
+                  <label for="shipping_address" class="active">Address</label>
                 </div>
-  
-                <div class="col-lg-4 col-md-6 mb-4">
-                  <label for="shipping_zip">Zip</label>
-                  <input type="text" class="form-control" id="zip" name="shipping_zip" placeholder="Zip code">
+
+                <div class="row">
+                  <div class="col-lg-4 col-md-12 mb-4">
+                    <label for="shipping_address">Country</label>
+                    <select class="custom-select d-block w-100" id="id_shipping_address" name="country_shipping">
+                      <option value="">Choose...</option>
+                      {% for value, name in form.country_shipping.field.choices %}
+                        <option value="{{ value }}"{% if form.fields.country.value == value %} selected{% endif %}>{{ name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+    
+                  <div class="col-lg-4 col-md-6 mb-4">
+                    <label for="shipping_zip">Zip</label>
+                    <input type="text" class="form-control" id="zip" name="shipping_zip" placeholder="Zip code">
+                  </div>
                 </div>
-  
+    
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="billing_same_as_shipping" name="billing_same_as_shipping">
+                  <label class="custom-control-label" for="billing_same_as_shipping">Billing address is the same as my shipping address</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="set_default_shipping" name="set_default_shipping">
+                  <label class="custom-control-label" for="set_default_shipping">Save as default shipping address</label>
+                </div>
+
               </div>
-  
-  
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="billing_same_as_shipping" name="billing_same_as_shipping">
-                <label class="custom-control-label" for="billing_same_as_shipping">Billing address is the same as my shipping address</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="set_default_shipping" name="set_default_shipping">
-                <label class="custom-control-label" for="set_default_shipping">Save as default shipping address</label>
-              </div>
-              {% if True %}
+              {% if address.default_shipping_address %}
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="use_default_shipping" name="use_default_shipping">
-                <label class="custom-control-label" for="use_default_shipping">Use default shipping address: 1234 Main St</label>
+                <label class="custom-control-label" for="use_default_shipping">
+                  Use default shipping address: <span class="grey-text">{{ address.shipping_address|truncatechars:10 }}</span>
+                </label>
               </div>
               {% endif %}
 
               <hr>
 
               <h4>Billing address</h4>
-              <div class="md-form mb-5">
-                <input type='text' placeholder='1234 Main St' id='billing_address' name='billing_address' class='form-control' />
-                <label for="billing_address" class="active">Address</label>
-              </div>
-  
-              <div class="row">
-  
-                <div class="col-lg-4 col-md-12 mb-4">
-                  <label for="billing_address">Country</label>
-                  <select class="custom-select d-block w-100" id="id_billing_address" name="country_billing">
-                    <option value="">Choose...</option>
-                    {% for value, name in form.country_billing.field.choices %}
-                      <option value="{{ value }}"{% if form.fields.country.value == value %} selected{% endif %}>{{ name }}</option>
-                    {% endfor %}
-                  </select>
+              <div class='hideable_billing'>
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='1234 Main St' id='billing_address' name='billing_address' class='form-control' />
+                  <label for="billing_address" class="active">Address</label>
                 </div>
-  
-                <div class="col-lg-4 col-md-6 mb-4">
-                  <label for="billing_zip">Zip</label>
-                  <input type="text" class="form-control" id="zip" name="billing_zip" placeholder="Zip code">
+    
+                <div class="row">
+                  <div class="col-lg-4 col-md-12 mb-4">
+                    <label for="billing_address">Country</label>
+                    <select class="custom-select d-block w-100" id="id_billing_address" name="country_billing">
+                      <option value="">Choose...</option>
+                      {% for value, name in form.country_billing.field.choices %}
+                        <option value="{{ value }}"{% if form.fields.country.value == value %} selected{% endif %}>{{ name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+    
+                  <div class="col-lg-4 col-md-6 mb-4">
+                    <label for="billing_zip">Zip</label>
+                    <input type="text" class="form-control" id="zip" name="billing_zip" placeholder="Zip code">
+                  </div>
                 </div>
-  
+    
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="set_default_billing" name="set_default_billing">
+                  <label class="custom-control-label" for="set_default_billing">Save as default billing address</label>
+                </div>
               </div>
-  
-  
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="set_default_billing" name="set_default_billing">
-                <label class="custom-control-label" for="set_default_billing">Save as default billing address</label>
-              </div>
-              {% if True %}
+              
+              {% if address.default_billing_address %}
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="use_default_billing" name="use_default_billing">
-                <label class="custom-control-label" for="use_default_billing">Use default billing address: 1234 Main St</label>
+                <label class="custom-control-label" for="use_default_billing">
+                  Use default billing address: <span class="grey-text">{{ address.billing_address|truncatechars:10 }}</span>
+                </label>
               </div>
               {% endif %}
             </div>
@@ -162,3 +166,28 @@
   
 </section>
 {% endblock content %}
+
+{% block script %}
+<script>
+  $(function() {
+    var hideable_shipping = $('.hideable_shipping');
+    var hideable_billing = $('.hideable_billing');
+    $('#use_default_shipping').change(function() {
+      if (this.checked) {
+        hideable_shipping.hide()
+      }
+      else {
+        hideable_shipping.show()
+      }
+    });
+    $('#use_default_billing').change(function() {
+      if (this.checked) {
+        hideable_billing.hide()
+      }
+      else {
+        hideable_billing.show()
+      }
+    });
+  });
+</script>
+{% endblock script %}

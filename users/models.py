@@ -5,7 +5,7 @@ from django.db import models
 
 class User(AbstractUser):
     """A custom user for extension"""
-    pass
+    stripe_customer_id = models.CharField(max_length=30, blank=True, null=True)
 
 
 class Address(models.Model):

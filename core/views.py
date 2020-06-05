@@ -327,17 +327,15 @@ class CheckoutView(LoginRequiredMixin, FormView):
 
         form = CheckoutForm()
         order_items = OrderItem.objects.filter(order=order[0], ordered=False)
+        address = Address.objects.filter(user=request.user)
 
         self.extra_context['order'] = order[0]
         self.extra_context['order_items'] = order_items
         self.extra_context['form'] = form
-
-        print(self.extra_context)
+        if address.exists():
+            self.extra_context['address'] = address[0]
 
         return self.render_to_response(self.extra_context)
-
-    def get_success_url(self, **kwargs):
-        return reverse('core:checkout')
 
     def form_valid(self, form, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -363,19 +361,17 @@ class CheckoutView(LoginRequiredMixin, FormView):
             if not address.exists():
                 return self.render_to_response(context)
         elif shipping_address and country_shipping and shipping_zip:
+            address, created = Address.objects.get_or_create(
+                user=self.request.user,
+            )
+            address.shipping_address = shipping_address
+            address.shipping_zip = shipping_zip
             if set_default_shipping:
-                address, created = Address.objects.get_or_create(
-                    user=self.request.user,
-                    shipping_address=shipping_address,
-                    shipping_zip=shipping_zip,
-                    default_shipping_address=True,
-                )
+                address.default_shipping_address = True
             else:
-                address, created = Address.objects.get_or_create(
-                    user=self.request.user,
-                    shipping_address=shipping_address,
-                    shipping_zip=shipping_zip,
-                )
+                address.default_shipping_address = False
+            address.save()
+
         else:
             if not billing_address or not country_billing or not billing_zip:
                 msg = 'Please fill in the required shipping and billing address fields.'
@@ -397,40 +393,44 @@ class CheckoutView(LoginRequiredMixin, FormView):
                     user=self.request.user,
                     default_shipping_address=True
                 )
-                if not address.exists():
-                    return self.render_to_response(context)
-                else:
+                if address.exists():
+                    address = address[0]
+                    if set_default_billing:
+                        address.default_billing_address = True
+                    else:
+                        address.default_billing_address = False
                     address.billing_address = address.shipping_address
+                    address.billing_zip = address.shipping_zip
                     address.save()
+                else:
+                    return self.render_to_response(context)
+
             elif shipping_address and country_shipping and shipping_zip:
                 address = Address.objects.get(user=self.request.user)
+                if set_default_billing:
+                    address.default_billing_address = True
+                else:
+                    address.default_billing_address = False
                 address.billing_address = shipping_address
                 address.billing_zip = shipping_zip
                 address.save()
-            else:
-                msg = 'Please fill in the required shipping address fields.'
-                messages.error(self.request, msg)
-                return self.render_to_response(context)
+
         elif billing_address and country_billing and billing_zip:
             address = Address.objects.get(user=self.request.user)
+            if set_default_billing:
+                address.default_billing_address = True
+            else:
+                address.default_billing_address = False
             address.billing_address = billing_address
             address.country_billing = country_billing
             address.billing_zip = billing_zip
             address.save()
         else:
-            if not shipping_address or not country_shipping or not shipping_zip:
-                msg = 'Please fill in the required shipping and billing address fields.'
-            else:
-                msg = 'Please fill in the required shipping address fields.'
+            msg = 'Please fill in the required billing address fields.'
             messages.error(self.request, msg)
             return self.render_to_response(context)
 
         if payment_option == 'ST':
-            # save
-            pass
+            return redirect('payment:create-payment')
         else:
-            # return silent error
-            pass
-
-        return self.render_to_response(context)
-        # return super().form_valid(form)
+            return self.render_to_response(context)

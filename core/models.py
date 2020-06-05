@@ -81,7 +81,7 @@ class Order(models.Model):
     ordered_date = models.DateTimeField(default=timezone.now)
     ordered = models.BooleanField(default=False)
     address = models.ForeignKey(
-        Address, on_delete=models.SET, null=True, blank=True)
+        Address, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f'Order of user {self.user.username}'

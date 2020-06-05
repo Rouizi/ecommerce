@@ -1,0 +1,682 @@
+[
+{
+  "model": "sites.site",
+  "pk": 1,
+  "fields": {
+    "domain": "example.com",
+    "name": "example.com"
+  }
+},
+{
+  "model": "core.size",
+  "pk": 1,
+  "fields": {
+    "name": "S"
+  }
+},
+{
+  "model": "core.size",
+  "pk": 2,
+  "fields": {
+    "name": "M"
+  }
+},
+{
+  "model": "core.size",
+  "pk": 3,
+  "fields": {
+    "name": "L"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 6,
+  "fields": {
+    "name": "Brushed Heather",
+    "category": "S",
+    "label": "BS",
+    "color_label": "primary-color",
+    "price": "99.00",
+    "discount_price": "88.00",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/jack_heather_grey_001.jpg",
+    "image2": "clothes/jack_heather_grey_009.jpg",
+    "slug": "brushed-heather"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 7,
+  "fields": {
+    "name": "Vintage Navy",
+    "category": "S",
+    "label": null,
+    "color_label": null,
+    "price": "73.50",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/vintage_001.jpg",
+    "image2": "clothes/vintage_010.jpg",
+    "slug": "vintage-navy"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 9,
+  "fields": {
+    "name": "The Jack",
+    "category": "S",
+    "label": "BS",
+    "color_label": "primary-color",
+    "price": "100.00",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/jack_000.jpg",
+    "image2": "clothes/jack_009.jpg",
+    "slug": "jack"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 10,
+  "fields": {
+    "name": "The Long Haul Jacket",
+    "category": "D",
+    "label": null,
+    "color_label": null,
+    "price": "188.00",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/jacket_lifstyle_01.jpg",
+    "image2": "clothes/jacket_lifstyle_02.jpg",
+    "slug": "long-haul-jacket"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 11,
+  "fields": {
+    "name": "Sun Bleached",
+    "category": "D",
+    "label": null,
+    "color_label": null,
+    "price": "68.60",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/sun_bleached_2.jpg",
+    "image2": "clothes/sun_bleached_1..jpg",
+    "slug": "sun-bleached"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 14,
+  "fields": {
+    "name": "Moto Jacket",
+    "category": "OW",
+    "label": null,
+    "color_label": null,
+    "price": "220.00",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/moto_jacket_1.jpg",
+    "image2": "clothes/moto_jacket_2.jpg",
+    "slug": "moto-jacket"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 15,
+  "fields": {
+    "name": "Tobacco",
+    "category": "OW",
+    "label": null,
+    "color_label": null,
+    "price": "150.99",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/tobacco_1.jpg",
+    "image2": "clothes/tobacco_2.jpg",
+    "slug": "tobacco"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 16,
+  "fields": {
+    "name": "Winslow Jacket",
+    "category": "OW",
+    "label": "N",
+    "color_label": "danger-color",
+    "price": "235.49",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/winslow_jacket_1.jpg",
+    "image2": "clothes/Winslow_jacket_2.jpg",
+    "slug": "winslow-jacket"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 17,
+  "fields": {
+    "name": "Port Jacket",
+    "category": "OW",
+    "label": null,
+    "color_label": null,
+    "price": "188.00",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/port_jacket_1.jpg",
+    "image2": "clothes/port_jacket_2.jpg",
+    "slug": "port-jacket"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 18,
+  "fields": {
+    "name": "Hemp Stripe",
+    "category": "OW",
+    "label": null,
+    "color_label": null,
+    "price": "94.40",
+    "discount_price": "84.99",
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/hemp_stripe_1.jpg",
+    "image2": "clothes/hemp_stripe_2.jpg",
+    "slug": "hemp-stripe"
+  }
+},
+{
+  "model": "core.item",
+  "pk": 19,
+  "fields": {
+    "name": "Hemp Donegal",
+    "category": "OW",
+    "label": "BS",
+    "color_label": "primary-color",
+    "price": "118.00",
+    "discount_price": null,
+    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, sapiente illo. Sit error voluptas repellat rerum quidem, soluta enim perferendis voluptates laboriosam. Distinctio, officia quis dolore quos sapiente tempore alias.",
+    "image1": "clothes/hemp_donegal_1.jpg",
+    "image2": "clothes/hemp_donegal_2.jpg",
+    "slug": "hemp-donegal"
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 1,
+  "fields": {
+    "stock": 140,
+    "item": 6,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 2,
+  "fields": {
+    "stock": 87,
+    "item": 6,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 3,
+  "fields": {
+    "stock": 102,
+    "item": 6,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 4,
+  "fields": {
+    "stock": 8,
+    "item": 7,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 5,
+  "fields": {
+    "stock": 0,
+    "item": 7,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 6,
+  "fields": {
+    "stock": 0,
+    "item": 7,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 7,
+  "fields": {
+    "stock": 4,
+    "item": 9,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 8,
+  "fields": {
+    "stock": 12,
+    "item": 9,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 9,
+  "fields": {
+    "stock": 8,
+    "item": 9,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 10,
+  "fields": {
+    "stock": 10,
+    "item": 10,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 11,
+  "fields": {
+    "stock": 15,
+    "item": 10,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 12,
+  "fields": {
+    "stock": 8,
+    "item": 10,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 13,
+  "fields": {
+    "stock": 10,
+    "item": 11,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 14,
+  "fields": {
+    "stock": 15,
+    "item": 11,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 15,
+  "fields": {
+    "stock": 9,
+    "item": 11,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 19,
+  "fields": {
+    "stock": 10,
+    "item": 14,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 20,
+  "fields": {
+    "stock": 15,
+    "item": 14,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 21,
+  "fields": {
+    "stock": 9,
+    "item": 14,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 22,
+  "fields": {
+    "stock": 10,
+    "item": 15,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 23,
+  "fields": {
+    "stock": 15,
+    "item": 15,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 24,
+  "fields": {
+    "stock": 9,
+    "item": 15,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 25,
+  "fields": {
+    "stock": 20,
+    "item": 16,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 26,
+  "fields": {
+    "stock": 20,
+    "item": 16,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 27,
+  "fields": {
+    "stock": 20,
+    "item": 16,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 28,
+  "fields": {
+    "stock": 0,
+    "item": 17,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 29,
+  "fields": {
+    "stock": 15,
+    "item": 17,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 30,
+  "fields": {
+    "stock": 9,
+    "item": 17,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 31,
+  "fields": {
+    "stock": 10,
+    "item": 18,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 32,
+  "fields": {
+    "stock": 15,
+    "item": 18,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 33,
+  "fields": {
+    "stock": 9,
+    "item": 18,
+    "size": 3
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 34,
+  "fields": {
+    "stock": 10,
+    "item": 19,
+    "size": 1
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 35,
+  "fields": {
+    "stock": 15,
+    "item": 19,
+    "size": 2
+  }
+},
+{
+  "model": "core.stockitem",
+  "pk": 36,
+  "fields": {
+    "stock": 9,
+    "item": 19,
+    "size": 3
+  }
+},
+{
+  "model": "users.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$180000$88QgOwC2Cxf6$489yfB13X3joLbd170IpRBq6rdqsEeHNfhW5JOV7tSE=",
+    "last_login": "2020-06-01T14:17:40.480Z",
+    "is_superuser": true,
+    "username": "rouizi",
+    "first_name": "",
+    "last_name": "",
+    "email": "cinorouizi@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2020-04-20T13:47:49.629Z",
+    "stripe_customer_id": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$180000$Qdx9GWZulZfQ$yLRkv2iX0XV5WhY8mWOZ01fFgLNt996BuICxR8igJDM=",
+    "last_login": "2020-05-14T01:37:02.256Z",
+    "is_superuser": false,
+    "username": "alfa",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2020-05-04T16:49:32.574Z",
+    "stripe_customer_id": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$180000$MS7ftLWVtqp7$YUIEh+Tr497C4kWm0HnOHQt2ACGlNXY52Ob1Qs1VWlg=",
+    "last_login": "2020-05-29T01:37:06.460Z",
+    "is_superuser": false,
+    "username": "beta",
+    "first_name": "",
+    "last_name": "",
+    "email": "cinorouizi@hotmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2020-05-04T17:07:38.784Z",
+    "stripe_customer_id": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.address",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "shipping_address": "45 Rue du Pr\u00e9sident Fran\u00e7ois Mitterrand",
+    "billing_address": "45 Rue du Pr\u00e9sident Fran\u00e7ois Mitterrand",
+    "shipping_zip": "91160",
+    "billing_zip": "91160",
+    "default_shipping_address": true,
+    "default_billing_address": false
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 42,
+  "fields": {
+    "user": 2,
+    "item": 6,
+    "quantity": 1,
+    "size": 1,
+    "ordered": false,
+    "order": 16
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 55,
+  "fields": {
+    "user": 1,
+    "item": 6,
+    "quantity": 5,
+    "size": 1,
+    "ordered": false,
+    "order": 24
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 56,
+  "fields": {
+    "user": 1,
+    "item": 6,
+    "quantity": 1,
+    "size": 3,
+    "ordered": false,
+    "order": 24
+  }
+},
+{
+  "model": "core.orderitem",
+  "pk": 57,
+  "fields": {
+    "user": 1,
+    "item": 9,
+    "quantity": 1,
+    "size": 2,
+    "ordered": false,
+    "order": 24
+  }
+},
+{
+  "model": "core.order",
+  "pk": 16,
+  "fields": {
+    "user": 2,
+    "ordered_date": "2020-05-14T00:10:34.227Z",
+    "ordered": false,
+    "address": null
+  }
+},
+{
+  "model": "core.order",
+  "pk": 24,
+  "fields": {
+    "user": 1,
+    "ordered_date": "2020-05-14T22:51:46.022Z",
+    "ordered": false,
+    "address": null
+  }
+},
+{
+  "model": "core.order",
+  "pk": 33,
+  "fields": {
+    "user": 1,
+    "ordered_date": "2020-05-24T23:58:35.649Z",
+    "ordered": false,
+    "address": null
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "email": "cinorouizi@sffe.fr",
+    "verified": false,
+    "primary": false
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "email": "cinorouizi@gmail.com",
+    "verified": false,
+    "primary": false
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 7,
+  "fields": {
+    "user": 3,
+    "email": "cinorouizi@hotmail.com",
+    "verified": false,
+    "primary": true
+  }
+}
+]

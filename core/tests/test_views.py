@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from core.models import Size, Item, StockItem, OrderItem, Order
-from users.models import User
+from users.models import User, Address
 from core.tests.factories import (
     ItemFactory,
     SizeFactory,
@@ -497,3 +497,212 @@ class TestCheckoutView(TestCase):
         response = self.client.get(reverse('core:checkout'))
 
         self.assertEqual(response.context['order_items'][0], order_item)
+
+    def test_use_default_shipping(self):
+        self.client.login(username='user1', password='1234')
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'use_default_shipping': True,
+                'payment_option': 'ST'
+            }
+        )
+        # If the form is not valid we have a return instead of a redirect
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_address(self):
+        self.client.login(username='user1', password='1234')
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'shipping_address': 'shipping_address_1',
+                'country_shipping': 'US',
+                'shipping_zip': 'shipping_zip_1',
+                'payment_option': 'ST'
+            }
+        )
+        address_user = Address.objects.filter(user=self.user)
+        self.assertTrue(address_user.exists())
+        self.assertFalse(address_user[0].default_shipping_address)
+
+    def test_set_default_shipping(self):
+        self.client.login(username='user1', password='1234')
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'shipping_address': 'shipping_address_1',
+                'country_shipping': 'US',
+                'shipping_zip': 'shipping_zip_1',
+                'set_default_shipping': True,
+                'payment_option': 'ST'
+            }
+        )
+        address_user = Address.objects.filter(user=self.user).get()
+        self.assertTrue(address_user.default_shipping_address)
+
+    def test_error_msg_if_fields_unfilled(self):
+        self.client.login(username='user1', password='1234')
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'payment_option': 'ST'
+            }
+        )
+        message = list(response.context['messages'])
+        msg = 'Please fill in the required shipping and billing address fields.'
+        self.assertEqual(str(message[0]), msg)
+
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'billing_address': 'billing_address_1',
+                'country_billing': 'US',
+                'billing_zip': 'billing_zip_1',
+                'payment_option': 'ST'
+            }
+        )
+        message = list(response.context['messages'])
+        msg = 'Please fill in the required shipping address fields.'
+        self.assertEqual(str(message[0]), msg)
+
+    def test_use_default_billing(self):
+        self.client.login(username='user1', password='1234')
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'shipping_address': 'shipping_address_1',
+                'country_shipping': 'US',
+                'shipping_zip': 'shipping_zip_1',
+                'use_default_billing': True,
+                'payment_option': 'ST'
+            }
+        )
+        # If the form is not valid we have a return instead of a redirect
+        self.assertEqual(response.status_code, 200)
+
+    def test_billing_same_as_shipping_with_default_shipping(self):
+        self.client.login(username='user1', password='1234')
+        address = AddressFactory(user=self.user, default_shipping_address=True)
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'use_default_shipping': True,
+                'billing_same_as_shipping': True,
+                'payment_option': 'ST'
+            }
+        )
+        address = Address.objects.get(user=self.user)
+        self.assertEqual(address.billing_address, address.shipping_address)
+        self.assertEqual(address.billing_zip, address.shipping_zip)
+        self.assertFalse(address.default_billing_address)
+
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'use_default_shipping': True,
+                'billing_same_as_shipping': True,
+                'set_default_billing': True,
+                'payment_option': 'ST'
+            }
+        )
+        address = Address.objects.get(user=self.user)
+        self.assertTrue(address.default_billing_address)
+
+    def test_billing_same_as_shipping_without_default_shipping(self):
+        self.client.login(username='user1', password='1234')
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'shipping_address': 'shipping_address_1',
+                'country_shipping': 'US',
+                'shipping_zip': 'shipping_zip_1',
+                'billing_same_as_shipping': True,
+                'payment_option': 'ST'
+            }
+        )
+        address = Address.objects.get(user=self.user)
+        self.assertEqual(address.billing_address, address.shipping_address)
+        self.assertEqual(address.billing_zip, address.shipping_zip)
+        self.assertFalse(address.default_billing_address)
+
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'shipping_address': 'shipping_address_1',
+                'country_shipping': 'US',
+                'shipping_zip': 'shipping_zip_1',
+                'billing_same_as_shipping': True,
+                'set_default_billing': True,
+                'payment_option': 'ST'
+            }
+        )
+        address = Address.objects.get(user=self.user)
+        self.assertTrue(address.default_billing_address)
+
+    def test_billing_address(self):
+        self.client.login(username='user1', password='1234')
+        address = AddressFactory(user=self.user, default_shipping_address=True)
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'use_default_shipping': True,
+                'billing_address': 'billing_address_1',
+                'country_billing': 'US',
+                'billing_zip': 'billing_zip_1',
+                'payment_option': 'ST'
+            }
+        )
+        address = Address.objects.get(user=self.user)
+        self.assertEqual(address.billing_address, 'billing_address_1')
+        self.assertEqual(address.billing_zip, 'billing_zip_1')
+        self.assertFalse(address.default_billing_address)
+
+    def test_billing_address_with_set_default_billing(self):
+        self.client.login(username='user1', password='1234')
+        address = AddressFactory(user=self.user, default_shipping_address=True)
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'use_default_shipping': True,
+                'billing_address': 'billing_address_1',
+                'country_billing': 'US',
+                'billing_zip': 'billing_zip_1',
+                'set_default_billing': True,
+                'payment_option': 'ST'
+            }
+        )
+        address = Address.objects.get(user=self.user)
+        self.assertEqual(address.billing_address, 'billing_address_1')
+        self.assertEqual(address.billing_zip, 'billing_zip_1')
+        self.assertTrue(address.default_billing_address)
+
+    def test_error_msg_if_not_billing_address(self):
+        self.client.login(username='user1', password='1234')
+        address = AddressFactory(user=self.user, default_shipping_address=True)
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'use_default_shipping': True,
+                'payment_option': 'ST'
+            }
+        )
+        message = list(response.context['messages'])
+        msg = 'Please fill in the required billing address fields.'
+        self.assertEqual(str(message[0]), msg)
+
+    def test_redirect_if_form_valid(self):
+        self.client.login(username='user1', password='1234')
+        address = AddressFactory(user=self.user, default_shipping_address=True)
+        OrderFactory(user=self.user)
+        response = self.client.post(
+            reverse('core:checkout'),
+            {
+                'use_default_shipping': True,
+                'billing_address': 'billing_address_1',
+                'country_billing': 'US',
+                'billing_zip': 'billing_zip_1',
+                'payment_option': 'ST'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/payment/create-payment/')

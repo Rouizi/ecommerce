@@ -4,6 +4,11 @@
 
 {% block content %}
 <section class="container mb-5 pb-5 pt-5 text-center">
+  <div class="alert alert-info alert-dismissible fade show">
+    <p>Use 4242424242424242 as a test card number with any CVC, postal code, and future expiration date.</p>
+    <p>Use the 4000000000003220 test card number to trigger a 3D Secure challenge flow.</p>
+    <button type='button' class="close" data-dismiss="alert">&times;</button>
+  </div>
   <h3 class="font-weight-bold dark-grey-text mb-5">Payment form</h3>
   <div class="row dark-grey-text">
 
@@ -42,8 +47,6 @@
       </div>
   
     </div>
-
-    
 
   </div>
 </section>
@@ -111,8 +114,12 @@
     });
     
     function callback(data) {
-        // Complete payment when the submit button is clicked
-        payWithCard(stripe, card, data.clientSecret);  
+      if (data.message) {
+        showError(data.message)
+        return
+      }
+      // Complete payment when the submit button is clicked
+      payWithCard(stripe, card, data.clientSecret);  
     };
     // Calls stripe.confirmCardPayment
     // If the card requires authentication Stripe shows a pop-up modal to
@@ -139,11 +146,8 @@
     // Shows a success message when the payment is complete
     var orderComplete = function(paymentIntentId) {
       loading(false);
-      $.ajax({
-        url: "/payment/create-payment/",
-        type: 'POST',
-        data: {'order_complete': true}
-      })
+      window.location.href=('/')
+      alert('Your payment was successful.')
       document.querySelector(".button").disabled = true;
     };
     // Show the customer the error from Stripe if their card fails to charge
@@ -153,7 +157,7 @@
       errorMsg.textContent = errorMsgText;
       setTimeout(function() {
         errorMsg.textContent = "";
-      }, 4000);
+      }, 6000);
     };
     // Show a spinner on payment submission
     var loading = function(isLoading) {

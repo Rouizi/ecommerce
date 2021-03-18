@@ -1,9 +1,6 @@
 from .base import *
 import dj_database_url
 
-print('*****************************************************************************************')
-print(config('SECRET_KEY'))
-print('*****************************************************************************************')
 SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False
@@ -37,7 +34,7 @@ EMAIL_USE_TLS = True
 
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", "")
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", "")
-AWS_STORAGE_BUCKET_NAME = config("S3_BUCKET_NAME", "")
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME", "")
 AWS_QUERYSTRING_AUTH = False
 AWS_S3_CUSTOM_DOMAIN = config("AWS_S3_CUSTOM_DOMAIN", "")
 

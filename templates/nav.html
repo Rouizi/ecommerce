@@ -1,35 +1,30 @@
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar" style="background-color: #667fa5;">
   <div class="container-fluid">
     <a class="navbar-brand" href="#"><strong>DJe-commerce</strong></a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item {% if home %}active{% endif %}">
-        <a class="nav-link" href="{% url 'home' %}">Shop</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Features</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Pricing</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav">
-      {% if user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'core:order-summary' %}">
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item {% if home %}active{% endif %}">
+          <a class="nav-link" href="{% url 'home' %}">Shop</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'core:order-summary' %}">
             <span class="badge badge-pill red">{{ nb_of_items }}</span>
             <i class="fas fa-shopping-cart" style="color: rgb(71, 71, 71)"></i>
           </a>
-      </li>
-      <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a></li>
-      {% else %}
-      <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}">Login</a></li>
-      <li class="nav-item"><a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a></li>
-      {% endif %}
-    </ul>
-  </div>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_login' %}">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </div>
   </div>
 </nav>

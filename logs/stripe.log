@@ -1,0 +1,6 @@
+2020-06-18 06:07:32,901 payment.views  INFO payment begin for user rouizi
+2020-06-18 06:07:50,167 payment.views  INFO payment begin for user rouizi
+2020-06-18 06:07:50,273 payment.views  INFO stripe_payment does not exist for user rouizi
+2021-02-19 20:50:14,996 payment.views  INFO payment begin for user cinorouizi
+2021-02-19 20:50:47,450 payment.views  INFO payment begin for user cinorouizi
+2021-02-19 20:50:47,561 payment.views  INFO stripe_payment does not exist for user cinorouizi

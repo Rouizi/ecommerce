@@ -1,9 +1,5 @@
 from .base import *
 
-SECRET_KEY = config('SECRET_KEY')
-print('*****************************************************************************************************')
-print(SECRET_KEY)
-print('*****************************************************************************************************')
 DEBUG = False
 
 ALLOWED_HOSTS = ["rouizi-commerce.herokuapp.com"]

@@ -40,8 +40,7 @@ class CreatePaymentView(LoginRequiredMixin, View):
         message.send()
 
     def get(self, request, *args, **kwargs):
-        logger.debug('ERGERG EGRG ERG ')
-        logger.debug('SALUT')
+        logger.info(f'payment begin for user {request.user}')
         address = Address.objects.filter(user=request.user)
         if not address.exists():
             messages.error(
@@ -60,81 +59,86 @@ class CreatePaymentView(LoginRequiredMixin, View):
         }
         amount = int(order.total_price() * 100)
 
-        if request.is_ajax():
-            # TODO: Add save information of cart
-            try:
-                stripe_payment = StripePayment.objects.filter(
-                    user=request.user, order=order)
-                if stripe_payment.exists():
-                    print('"""stripe_payment exitsts"""')
-                    payment_intent_id = stripe_payment[0].payment_intent_id
-                    intent = stripe.PaymentIntent.retrieve(payment_intent_id)
-                    print(intent)
-                    return JsonResponse({
-                        'clientSecret': intent['client_secret']
-                    })
-                else:
-                    print('"""stripe_payment NOOOOOT exitsts"""')
-                    customer = stripe.Customer.create(
-                        email=request.user.email,
-                        metadata={'user_id': request.user.id}
-                    )
-                    intent = stripe.PaymentIntent.create(
-                        amount=amount,
-                        currency='usd',
-                        customer=customer['id'],
-                        metadata={
-                            'user_id': request.user.id,
-                            'order_id': order.id
-                        }
-                    )
-                    return JsonResponse({
-                        'clientSecret': intent['client_secret']
-                    })
-            except stripe.error.CardError as e:
-                msg = 'Your card number is not valid.'
-                return JsonResponse({'message': msg})
-            except stripe.error.RateLimitError as e:
-                msg = 'Too many requests made to the API too quickly, please try again'
-                return JsonResponse({'message': msg})
-            except stripe.error.InvalidRequestError as e:
-                subject = 'stripe.error.InvalidRequestError'
-                html_content = f"""
-                <p>Report from Dj-ecommerce<br>The error occurred with stripe</p>
-                <p><strong>Type</strong> is: {e.error.type}<br>
-                <strong>Message</strong> is: {e.error.message}</p>
-                """
+        if not request.is_ajax():
+            return render(request, 'payment/create_payment.html', context)
+        # TODO: Add save information of cart
+        try:
+            stripe_payment = StripePayment.objects.filter(
+                user=request.user, order=order)
+            if stripe_payment.exists():
+                logger.info(f'stripe_payment exist for user {request.user}')
+                payment_intent_id = stripe_payment[0].payment_intent_id
+                intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+                return JsonResponse({
+                    'clientSecret': intent['client_secret']
+                })
+            else:
+                logger.info(
+                    f'stripe_payment does not exist for user {request.user}')
+                customer = stripe.Customer.create(
+                    email=request.user.email,
+                    metadata={'user_id': request.user.id}
+                )
+                intent = stripe.PaymentIntent.create(
+                    amount=amount,
+                    currency='usd',
+                    customer=customer['id'],
+                    metadata={
+                        'user_id': request.user.id,
+                        'order_id': order.id
+                    }
+                )
+                return JsonResponse({
+                    'clientSecret': intent['client_secret']
+                })
+        except stripe.error.CardError as e:
+            logger.exception('stripe.error.CardError')
+            msg = 'Your card number is not valid.'
+            return JsonResponse({'message': msg})
+        except stripe.error.RateLimitError as e:
+            logger.exception('stripe.error.RateLimitError')
+            msg = 'Too many requests made to the API too quickly, please try again'
+            return JsonResponse({'message': msg})
+        except stripe.error.InvalidRequestError as e:
+            logger.exception('stripe.error.InvalidRequestError')
+            subject = 'stripe.error.InvalidRequestError'
+            html_content = f"""
+            <p>Report from Dj-ecommerce<br>The error occurred with stripe</p>
+            <p><strong>Type</strong> is: {e.error.type}<br>
+            <strong>Message</strong> is: {e.error.message}</p>
+            """
 
-                self.send_email(subject=subject, html_content=html_content)
-                msg = 'A problem occurred please try again, if the error persists please try later.'
+            self.send_email(subject=subject, html_content=html_content)
+            msg = 'A problem occurred please try again, if the error persists please try later.'
 
-                return JsonResponse({'message': msg})
-            except stripe.error.AuthenticationError as e:
-                logger.exception('Probleeeeeeeeeeeeeeeem')
-                subject = 'stripe.error.AuthenticationError'
-                html_content = f"""
-                <p>Report from Dj-ecommerce<br>The error occurred with stripe</p>
-                <p><strong>Type</strong> is: {e.error.type}<br>
-                <strong>Message</strong> is: {e.error.message}</p>
-                """
-                self.send_email(subject=subject, html_content=html_content)
-                msg = 'An internal problem occurred, we were notified. '\
-                    'Please try again. If the error persists please try later.'
-                return JsonResponse({'message': msg})
-            except stripe.error.APIConnectionError as e:
-                # TODO: send email to myself and maybe an SMS
-                msg = 'Network communication with stripe failed. You were not charged. please try later.'
-                return JsonResponse({'message': msg})
-            except stripe.error.StripeError as e:
-                # TODO: send email to myself and maybe and SMS
-                msg = 'An internal problem occurred, we were notified. Please try later.'
-                return JsonResponse({'message': msg})
-            except Exception as e:
-                # TODO: send email to myself
-                print(e)
-                msg = 'Something went wrong, please try again, if the error persits please contact us.'
-                return JsonResponse({'message': msg})
-        return render(request, 'payment/create_payment.html', context)
+            return JsonResponse({'message': msg})
+        except stripe.error.AuthenticationError as e:
+            logger.exception('stripe.error.AuthenticationError')
+            subject = 'stripe.error.AuthenticationError'
+            html_content = f"""
+            <p>Report from Dj-ecommerce<br>The error occurred with stripe</p>
+            <p><strong>Type</strong> is: {e.error.type}<br>
+            <strong>Message</strong> is: {e.error.message}</p>
+            """
+            self.send_email(subject=subject, html_content=html_content)
+            msg = 'An internal problem occurred, we were notified. '\
+                'Please try again. If the error persists please try later.'
+            return JsonResponse({'message': msg})
+        except stripe.error.APIConnectionError as e:
+            # TODO: send email to myself and maybe an SMS
+            logger.exception('stripe.error.APIConnectionError')
+            msg = 'Network communication with stripe failed. You were not charged. please try later.'
+            return JsonResponse({'message': msg})
+        except stripe.error.StripeError as e:
+            # TODO: send email to myself and maybe and SMS
+            logger.exception('stripe.error.StripeError')
+            msg = 'An internal problem occurred, we were notified. Please try later.'
+            return JsonResponse({'message': msg})
+        except Exception as e:
+            # TODO: send email to myself
+            logger.exception(e)
+            msg = 'Something went wrong, please try again, if the error persits please contact us.'
+            return JsonResponse({'message': msg})
 
 # Stripe can send webhook events to my server
 # to notify me when the status of a PaymentIntent changes
@@ -148,22 +152,18 @@ def webhook(request):
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
-    endpoint_secret = 'whsec_JVN5v6f0PqItxJf5Jgbdz2WBmkVWIIiw'
 
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, endpoint_secret
         )
-        print('"event: "', event)
     except ValueError as e:
         # Invalid payload
-        print("ValueError")
-        raise(e)
+        logger.exception('ValueError in webhook')
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
-        print('stripe.error.SignatureVerificationError')
-        raise(e)
+        logger.exception('stripe.error.SignatureVerificationError in webhook')
         return HttpResponse(status=400)
 
     # Create a reference to a PaymentIntent in my database
@@ -185,24 +185,28 @@ def webhook(request):
                 payment_intent_id=event.data.object.id
             )
             stripe_payment.save()
+            logger.info(
+                f''' webhook says: reference created for PaymentIntent 
+                for use {user} (stripe_payment = {stripe_payment})''')
     # Create a reference to a customer in my database
     elif 'customer' in event.type:
-        print('*******************customer***************************')
         customer_id = event.data.object.id
         user_id = int(event.data.object.metadata.user_id)
         user = User.objects.get(pk=user_id)
         if user.stripe_customer_id is None:
-            print('stripe_customer_id NOOOT exists')
             user.stripe_customer_id = customer_id
             user.save()
+            logger.info(
+                f'''webhook says: reference created for Customer
+                 for user {user} (customer_id = {customer_id})''')
 
     # Handle the event
     if event.type == 'payment_intent.succeeded':
-        # order = Order.objects.get(user=request.user, ordered=False)
-        # order.update(ordered=True)
         # send email to the user manually or via stripe
+        order = Order.objects.get(user=request.user, ordered=False)
+        order.update(ordered=True)
         payment_intent = event.data.object
-        print('PaymentIntent was successful!')
+        logger.info('webhook says: PaymentIntent was successful!')
     elif event.type == 'payment_intent.payment_failed':
         # send email to the user manually or via stripe
         payment_intent = event.data.object
@@ -211,11 +215,9 @@ def webhook(request):
         else:
             error_message = None
 
-        print('FAILEDFAILEDFAILEDFAILEDFAILEDFAILEDFAILEDFAILEDFAILEDFAILEDFAILED')
-    # ... handle other event types
+        logger.info(f'webhook says: payment failed with error message: {error_message}')
     else:
-        print('*****************************************')
         # Unexpected event type
-        print('"Unexpected event typeUnexpected event typeUnexpected event type"')
+        logger.info(f'webhook says: Unexpected event {event.type}')
 
     return HttpResponse(status=200)

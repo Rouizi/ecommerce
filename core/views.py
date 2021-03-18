@@ -49,7 +49,8 @@ class HomeView(ListView):
 
         if order_by and filter_by and category:
             if filter_by == 'N' or filter_by == 'BS':
-                items = Item.objects.filter(category=category, label=filter_by).order_by(order_by)
+                items = Item.objects.filter(
+                    category=category, label=filter_by).order_by(order_by)
             elif filter_by == 'discount':
                 items = Item.objects.filter(
                     category=category
@@ -65,12 +66,15 @@ class HomeView(ListView):
             items = Item.objects.order_by(order_by)
             if filter_by:
                 if filter_by == 'N' or filter_by == 'BS':
-                    items = Item.objects.filter(label=filter_by).order_by(order_by)
+                    items = Item.objects.filter(
+                        label=filter_by).order_by(order_by)
                 elif filter_by == 'discount':
-                    items = Item.objects.exclude(discount_price__isnull=True).order_by(order_by)
+                    items = Item.objects.exclude(
+                        discount_price__isnull=True).order_by(order_by)
                 context['filter_by'] = filter_by
             if category:
-                items = Item.objects.filter(category=category).order_by(order_by)
+                items = Item.objects.filter(
+                    category=category).order_by(order_by)
                 context['category'] = category
 
             paginator = self.paginator_class(items, self.paginate_by)
@@ -170,13 +174,15 @@ class ItemDetailView(DetailView):
                         with transaction.atomic():
                             stock_item.stock = F('stock') - quantity_request
                             stock_item.save()
-                            add_to_cart(request, self.object, quantity_request, stock_item.size, order_item)
+                            add_to_cart(
+                                request, self.object, quantity_request, stock_item.size, order_item)
                     except IntegrityError:
                         msg = 'An internal error has occurred. Please try your request again.'
                         messages.error(request, msg)
                         return redirect('/')
             else:
-                messages.error(request, 'This item is unavailable for this size.')
+                messages.error(
+                    request, 'This item is unavailable for this size.')
 
             return self.render_to_response(context=context)
 
@@ -189,7 +195,8 @@ def add_to_cart(request, item, quantity, size, order_item):
         order_item = order_item[0]
         order_item.quantity = F('quantity') + quantity
         order_item.save()
-        messages.info(request, f"This item quantity for size {size.name} was updated.")
+        messages.info(
+            request, f"This item quantity for size {size.name} was updated.")
 
     else:
         order_item = OrderItem.objects.create(
@@ -205,16 +212,19 @@ def add_to_cart(request, item, quantity, size, order_item):
         if order.exists():
             order_item.order = order[0]
             order_item.save()
-            messages.info(request, f"This item for size {size.name} was added to your cart.")
+            messages.info(
+                request, f"This item for size {size.name} was added to your cart.")
         else:
             order = Order.objects.create(user=request.user, ordered=False)
             order_item.order = order
             order_item.save()
-            messages.info(request, f"This item for size {size.name} was added to your cart.")
+            messages.info(
+                request, f"This item for size {size.name} was added to your cart.")
 
 
 class OrderSummary(LoginRequiredMixin, View):
     """Show the items with their details that are in the order of the user"""
+
     def get(self, request, *args, **kwargs):
         order = Order.objects.filter(user=request.user, ordered=False)
         context = {}
@@ -308,7 +318,8 @@ def remove_order_item_from_cart(request, order_item, stock_item):
     stock_item.save()
     order_item.delete()
     # If there is no order item in the order we delete the order
-    order_items = OrderItem.objects.filter(user=request.user, order=order, ordered=False)
+    order_items = OrderItem.objects.filter(
+        user=request.user, order=order, ordered=False)
     if not order_items.exists():
         order.delete()
     messages.info(request, "This item was removed from your cart.")
@@ -346,7 +357,8 @@ class CheckoutView(LoginRequiredMixin, FormView):
         billing_zip = form.cleaned_data.get('billing_zip')
         country_shipping = form.cleaned_data.get('country_shipping')
         country_billing = form.cleaned_data.get('country_billing')
-        billing_same_as_shipping = form.cleaned_data.get('billing_same_as_shipping')
+        billing_same_as_shipping = form.cleaned_data.get(
+            'billing_same_as_shipping')
         set_default_shipping = form.cleaned_data.get('set_default_shipping')
         set_default_billing = form.cleaned_data.get('set_default_billing')
         use_default_shipping = form.cleaned_data.get('use_default_shipping')

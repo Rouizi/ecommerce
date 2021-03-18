@@ -1,8 +1,8 @@
 from .base import *
 
-# SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
-# DEBUG = False
+DEBUG = False
 
 ALLOWED_HOSTS = ["rouizi-commerce.herokuapp.com"]
 

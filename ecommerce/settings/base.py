@@ -2,14 +2,9 @@ import os
 from decouple import config
 import dj_database_url
 
-SECRET_KEY = 'rzegzef-zef-ze-fzefzefzefzef'
 
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
-
-DEBUG = False
-
-ALLOWED_HOSTS = ["rouizi-commerce.herokuapp.com"]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -147,51 +142,33 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 
 # Logging
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': True,
-#     'formatters': {
-#         'verbose': {
-#             'format': '%(asctime)s %(name)s  %(levelname)s %(message)s',
-#         },
-#     },
-#     'handlers': {
-#         'stripe': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': 'logs/stripe.log',
-#             'formatter': 'verbose',
-#         },
-#         'file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': 'logs/all_logs.log',
-#             'formatter': 'verbose',
-#         },
-#     },
-#     'loggers': {
-#         'payment': {
-#             'level': 'DEBUG',
-#             'handlers': ['stripe'],
-#             'propagate': True,
-#         }
-#     }
-# }
-
-
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# db_from_env = dj_database_url.config(conn_max_age=500)
-# DATABASES['default'].update(db_from_env)
-
-# STATIC_URL = '/static/'
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'static'),
-# )
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# # s3 public media settings
-# # media
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(name)s  %(levelname)s %(message)s',
+        },
+    },
+    'handlers': {
+        'stripe': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/stripe.log',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/all_logs.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'payment': {
+            'level': 'DEBUG',
+            'handlers': ['stripe'],
+            'propagate': True,
+        }
+    }
+}

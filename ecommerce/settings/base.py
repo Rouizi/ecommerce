@@ -1,6 +1,7 @@
 import os
 from decouple import config
 import dj_database_url
+import django_heroku
 
 SECRET_KEY = 'rzegzef-zef-ze-fzefzefzefzef'
 
@@ -181,10 +182,10 @@ ALLOWED_HOSTS = ["rouizi-commerce.herokuapp.com"]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-DATABASES['default'] = dj_database_url.config(
-    conn_max_age=600, ssl_require=True)
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 # # Stripe API keys
 # # In production I am going to use my test keys same as in development
@@ -222,3 +223,4 @@ STATICFILES_STORAGE = 'ecommerce.storage_backends.StaticStorage'
 PUBLIC_MEDIA_LOCATION = 'media'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
 DEFAULT_FILE_STORAGE = 'ecommerce.storage_backends.PublicMediaStorage'
+django_heroku.settings(locals())

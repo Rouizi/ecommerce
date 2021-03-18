@@ -1,5 +1,4 @@
 from .base import *
-import dj_database_url
 
 SECRET_KEY = config('SECRET_KEY')
 print('*****************************************************************************************************')

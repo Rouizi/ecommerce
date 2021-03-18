@@ -13,20 +13,20 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DATABASES['default'] = dj_database_url.config(
     conn_max_age=600, ssl_require=True)
 
-# # Stripe API keys
-# # In production I am going to use my test keys same as in development
-# STRIPE_PUBLISHABLE_KEY_TEST = config('STRIPE_PUBLISHABLE_KEY_TEST')
-# STRIPE_SECRET_KEY_TEST = config('STRIPE_SECRET_KEY_TEST')
-# # Stripe endpoint's secret for webhooks
-# ENDPOINT_SECRET = config('ENDPOINT_SECRET')
+# Stripe API keys
+# In production I am going to use my test keys same as in development
+STRIPE_PUBLISHABLE_KEY_TEST = config('STRIPE_PUBLISHABLE_KEY_TEST')
+STRIPE_SECRET_KEY_TEST = config('STRIPE_SECRET_KEY_TEST')
+# Stripe endpoint's secret for webhooks
+ENDPOINT_SECRET = config('ENDPOINT_SECRET')
 
-# # Send email with sendgrid
-# EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-# EMAIL_HOST = config('EMAIL_HOST')
-# EMAIL_PORT = config('EMAIL_PORT')
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-# EMAIL_USE_TLS = True
+# Send email with sendgrid
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
 
 # Media
 # Amazon Simple Storage Service (S3) to store media file

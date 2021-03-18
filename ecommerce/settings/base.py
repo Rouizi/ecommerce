@@ -2,8 +2,6 @@ import os
 from decouple import config
 import dj_database_url
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
-
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
@@ -136,8 +134,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'users.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-
 # django-allauth
 ACCOUNT_ADAPTER = 'users.adapter.AccountAdapter'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -145,33 +141,33 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 
 # Logging
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '%(asctime)s %(name)s  %(levelname)s %(message)s',
-        },
-    },
-    'handlers': {
-        'stripe': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'logs/stripe.log',
-            'formatter': 'verbose',
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'logs/all_logs.log',
-            'formatter': 'verbose',
-        },
-    },
-    'loggers': {
-        'payment': {
-            'level': 'DEBUG',
-            'handlers': ['stripe'],
-            'propagate': True,
-        }
-    }
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(asctime)s %(name)s  %(levelname)s %(message)s',
+#         },
+#     },
+#     'handlers': {
+#         'stripe': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs/stripe.log',
+#             'formatter': 'verbose',
+#         },
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs/all_logs.log',
+#             'formatter': 'verbose',
+#         },
+#     },
+#     'loggers': {
+#         'payment': {
+#             'level': 'DEBUG',
+#             'handlers': ['stripe'],
+#             'propagate': True,
+#         }
+#     }
+# }

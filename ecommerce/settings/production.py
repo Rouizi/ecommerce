@@ -1,6 +1,9 @@
 from .base import *
 import dj_database_url
 
+print('*****************************************************************************************')
+print(config('SECRET_KEY'))
+print('*****************************************************************************************')
 SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False

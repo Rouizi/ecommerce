@@ -21,3 +21,5 @@ coverage.xml
 # Environments
 .env
 venv/
+
+logs/
